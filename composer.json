@@ -1,0 +1,25 @@
+{
+  "name": "kirkaracha/guzzle-gofer",
+  "authors": [
+    {
+      "name": "Kirk Franklin",
+      "email": "kirk@magneato.com"
+    }
+  ],
+  "description": "GuzzleGofer: simple Guzzle setup for the most common use cases",
+  "type": "library",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Kirkaracha\\GuzzleGofer\\": "src/"
+    }
+  },
+  "require": {
+    "guzzlehttp/guzzle": "^6.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.0",
+    "orchestra/testbench": "^3.6"
+  }
+}
