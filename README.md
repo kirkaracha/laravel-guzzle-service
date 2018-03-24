@@ -1,2 +1,3 @@
-# laravel-guzzle-service
-Laravel Guzzle Service
+# GuzzleGofer
+Simple API for most common Guzzle use cases.
+
