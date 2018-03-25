@@ -13,6 +13,9 @@ class GuzzleGoferServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->publishes([
+            __DIR__ . '/config/guzzle-gofer.php' => config_path('guzzle-gofer.php'),
+        ]);
     }
 
     /**
@@ -25,6 +28,11 @@ class GuzzleGoferServiceProvider extends ServiceProvider
         $this->app->singleton(GuzzleGofer::class, function () {
             return new GuzzleGofer();
         });
+
         $this->app->alias(GuzzleGofer::class, 'guzzle-gofer');
+
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/guzzle-gofer.php', 'guzzle-gofer'
+        );
     }
 }
