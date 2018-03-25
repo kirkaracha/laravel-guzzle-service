@@ -7,7 +7,7 @@
     }
   ],
   "description": "GuzzleGofer: simple Guzzle setup for the most common use cases",
-  "type": "library",
+  "type": "package",
   "minimum-stability": "dev",
   "prefer-stable": true,
   "autoload": {
@@ -28,7 +28,7 @@
         "Kirkaracha\\GuzzleGofer\\GuzzleGoferServiceProvider"
       ],
       "aliases": {
-        "Debugbar": "Kirkaracha\\GuzzleGofer\\GuzzleGoferFacade"
+        "GuzzleGofer": "Kirkaracha\\GuzzleGofer\\GuzzleGoferFacade"
       }
     }
   }

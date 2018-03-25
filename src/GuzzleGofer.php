@@ -119,61 +119,66 @@ class GuzzleGofer
     }
 
     /**
-     * @param string $path
+     * @param string $uri
      * @param array $queries
      * @return bool|mixed|\Psr\Http\Message\ResponseInterface
      */
-    public function getRequest(string $path, array $queries = [])
+    public function getRequest(string $uri, array $queries = [])
     {
         $method = self::METHOD_GET;
 
         $data = !empty ($queries) ? ['query' => $queries] : null;
 
-        return $this->performRequest($path, $method, $data);
+        return $this->performRequest($uri, $method, $data);
     }
 
     /**
-     * @param string $path
+     * @param string $uri
      * @param array $data
      * @return bool|mixed|\Psr\Http\Message\ResponseInterface
      */
-    public function patchRequest(string $path, array $data)
+    public function patchRequest(string $uri, array $data)
     {
         $method = self::METHOD_PATCH;
 
-        return $this->performRequest($path, $method, $data);
+        return $this->performRequest($uri, $method, $data);
     }
 
     /**
-     * @param string $path
+     * @param string $uri
      * @param array $data
      * @return bool|mixed|\Psr\Http\Message\ResponseInterface
      */
-    public function postRequest(string $path, array $data)
+    public function postRequest(string $uri, array $data)
     {
         $method = self::METHOD_POST;
 
-        return $this->performRequest($path, $method, $data);
+        return $this->performRequest($uri, $method, $data);
     }
 
     /**
-     * @param string $path
+     * @param string $uri
      * @param array $data
      * @return bool|mixed|\Psr\Http\Message\ResponseInterface
      */
-    public function putRequest(string $path, array $data)
+    public function putRequest(string $uri, array $data)
     {
         $method = self::METHOD_PUT;
 
-        return $this->performRequest($path, $method, $data);
+        return $this->performRequest($uri, $method, $data);
     }
 
-    private function performRequest(string $path, string $method, $data = null)
+    /**
+     * @param string $uri
+     * @param string $method
+     * @param null $data
+     * @return mixed|\Psr\Http\Message\ResponseInterface|string
+     */
+    private function performRequest(string $uri, string $method, $data = null)
     {
         $headers = $this->makeHeaders($method);
 
         try {
-            $uri = $this->getFullUri($path);
             $psr7Request = new Request($method, $uri, $headers, $data);
 
             $response = $this->client->send($psr7Request);
@@ -191,11 +196,12 @@ class GuzzleGofer
     }
 
     /**
+     * @param string $baseUri
      * @param string $path
      * @return string
      */
-    private function getFullUri(string $path)
+    public function getFullUri(string $baseUri, string $path)
     {
-        return $this->baseUri . $path;
+        return $baseUri . $path;
     }
 }
