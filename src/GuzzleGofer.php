@@ -106,9 +106,16 @@ class GuzzleGofer
         return $headers;
     }
 
-    public function deleteRequest(string $path)
+    /**
+     * @param string $path
+     * @param array $data
+     * @return mixed|\Psr\Http\Message\ResponseInterface|string
+     */
+    public function deleteRequest(string $path, array $data)
     {
         $method = self::METHOD_DELETE;
+
+        return $this->performRequest($path, $method, $data);
     }
 
     /**
@@ -166,7 +173,7 @@ class GuzzleGofer
         $headers = $this->makeHeaders($method);
 
         try {
-            $uri         = $this->getFullUri($path);
+            $uri = $this->getFullUri($path);
             $psr7Request = new Request($method, $uri, $headers, $data);
 
             $response = $this->client->send($psr7Request);
