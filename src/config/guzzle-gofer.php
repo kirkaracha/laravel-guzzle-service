@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'http_errors' => 'true',
+    'throw_http_errors' => 'true',
 ];

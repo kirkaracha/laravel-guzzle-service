@@ -34,7 +34,7 @@ class GuzzleGofer
 
     public function __construct()
     {
-        $this->httpErrors = config('guzzle-gofer.http_errors');
+        $this->httpErrors = config('guzzle-gofer.throw_http_errors');
     }
 
     /**
@@ -109,7 +109,7 @@ class GuzzleGofer
     /**
      * @param string $path
      * @param array $data
-     * @return mixed|\Psr\Http\Message\ResponseInterface|string
+     * @return mixed
      */
     public function deleteRequest(string $path, array $data)
     {
@@ -121,7 +121,7 @@ class GuzzleGofer
     /**
      * @param string $uri
      * @param array $queries
-     * @return bool|mixed|\Psr\Http\Message\ResponseInterface
+     * @return mixed
      */
     public function getRequest(string $uri, array $queries = [])
     {
@@ -135,7 +135,7 @@ class GuzzleGofer
     /**
      * @param string $uri
      * @param array $data
-     * @return bool|mixed|\Psr\Http\Message\ResponseInterface
+     * @return mixed
      */
     public function patchRequest(string $uri, array $data)
     {
@@ -147,7 +147,7 @@ class GuzzleGofer
     /**
      * @param string $uri
      * @param array $data
-     * @return bool|mixed|\Psr\Http\Message\ResponseInterface
+     * @return mixed
      */
     public function postRequest(string $uri, array $data)
     {
@@ -159,7 +159,7 @@ class GuzzleGofer
     /**
      * @param string $uri
      * @param array $data
-     * @return bool|mixed|\Psr\Http\Message\ResponseInterface
+     * @return mixed
      */
     public function putRequest(string $uri, array $data)
     {
@@ -169,17 +169,17 @@ class GuzzleGofer
     }
 
     /**
-     * @param string $uri
+     * @param string $url
      * @param string $method
      * @param null $data
-     * @return mixed|\Psr\Http\Message\ResponseInterface|string
+     * @return mixed
      */
-    private function performRequest(string $uri, string $method, $data = null)
+    public function performRequest(string $url, string $method, $data = null)
     {
         $headers = $this->makeHeaders($method);
 
         try {
-            $psr7Request = new Request($method, $uri, $headers, $data);
+            $psr7Request = new Request($method, $url, $headers, $data);
 
             $response = $this->client->send($psr7Request);
         } catch (ConnectException $e) {
@@ -200,7 +200,7 @@ class GuzzleGofer
      * @param string $path
      * @return string
      */
-    public function getFullUri(string $baseUri, string $path)
+    public function getFullUrl(string $baseUri, string $path)
     {
         return $baseUri . $path;
     }
