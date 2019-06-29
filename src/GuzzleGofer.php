@@ -6,16 +6,18 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Log;
 
 class GuzzleGofer
 {
     const METHOD_DELETE = 'DELETE';
-    const METHOD_GET    = 'GET';
-    const METHOD_PATCH  = 'PATCH';
-    const METHOD_POST   = 'POST';
-    const METHOD_PUT    = 'PUT';
+    const METHOD_GET = 'GET';
+    const METHOD_PATCH = 'PATCH';
+    const METHOD_POST = 'POST';
+    const METHOD_PUT = 'PUT';
 
     const SEND_FORM_HEADER = [
         self::METHOD_PATCH,
@@ -29,18 +31,18 @@ class GuzzleGofer
     /** @var Client $client */
     protected $client;
 
-    /** @var bool $httpErrors */
-    protected $httpErrors;
+    /** @var bool $logHttpErrors */
+    protected $logHttpErrors;
 
     public function __construct()
     {
-        $this->httpErrors = config('guzzle-gofer.throw_http_errors');
+        $this->logHttpErrors = config('guzzle-gofer.log_http_errors');
     }
 
     /**
      * @return string
      */
-    public function getBaseUri()
+    public function getBaseUri(): string
     {
         return $this->baseUri;
     }
@@ -92,10 +94,10 @@ class GuzzleGofer
      * @param string $method
      * @return array
      */
-    public function makeHeaders(string $method)
+    public function makeHeaders(string $method): array
     {
         $headers = [
-            'Accept'       => 'application/json',
+            'Accept' => 'application/json',
             'Content-type' => 'application/json'
         ];
 
@@ -110,6 +112,7 @@ class GuzzleGofer
      * @param string $path
      * @param array $data
      * @return mixed
+     * @throws GuzzleException
      */
     public function deleteRequest(string $path, array $data)
     {
@@ -122,6 +125,7 @@ class GuzzleGofer
      * @param string $uri
      * @param array $queries
      * @return mixed
+     * @throws GuzzleException
      */
     public function getRequest(string $uri, array $queries = [])
     {
@@ -136,6 +140,7 @@ class GuzzleGofer
      * @param string $uri
      * @param array $data
      * @return mixed
+     * @throws GuzzleException
      */
     public function patchRequest(string $uri, array $data)
     {
@@ -148,6 +153,7 @@ class GuzzleGofer
      * @param string $uri
      * @param array $data
      * @return mixed
+     * @throws GuzzleException
      */
     public function postRequest(string $uri, array $data)
     {
@@ -160,6 +166,7 @@ class GuzzleGofer
      * @param string $uri
      * @param array $data
      * @return mixed
+     * @throws GuzzleException
      */
     public function putRequest(string $uri, array $data)
     {
@@ -173,6 +180,10 @@ class GuzzleGofer
      * @param string $method
      * @param null $data
      * @return mixed
+     * @throws ClientException
+     * @throws ConnectException
+     * @throws ServerException
+     * @throws GuzzleException
      */
     public function performRequest(string $url, string $method, $data = null)
     {
@@ -182,14 +193,18 @@ class GuzzleGofer
             $psr7Request = new Request($method, $url, $headers, $data);
 
             $response = $this->client->send($psr7Request);
-        } catch (ConnectException $e) {
-            $response = 'ConnectException: ' . $e->getMessage();
         } catch (ClientException $e) {
             $response = 'ClientException: ' . $e->getMessage();
+        } catch (ConnectException $e) {
+            $response = 'ConnectException: ' . $e->getMessage();
         } catch (ServerException $e) {
             $response = 'ServerException: ' . $e->getMessage();
         } catch (Exception $e) {
             $response = 'Exception: ' . $e->getMessage();
+        }
+
+        if ($this->logHttpErrors === true) {
+            Log::error($response);
         }
 
         return $response;

@@ -1,5 +1,5 @@
-<?php
+<?php declare(strict_types=1);
 
 return [
-    'throw_http_errors' => 'true',
+    'log_http_errors' => true,
 ];
